@@ -1,0 +1,48 @@
+body {
+  padding: 0;
+  margin: 0;
+}
+h1, h2, h3, h4, h5, h6, p, ul, li {
+  margin: 0;
+  padding: 0;
+}
+.container {
+  width: 500px;
+  height: 500px;
+  margin: 100px auto 0;
+  background: black;
+  padding: 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  h1 {
+    height: 20%;
+    font-size: 40px;
+    font-weight: bold;
+    text-align: center;
+    color: #fff;
+  }
+  .monster {
+    height: 50%;
+    text-align: center;
+    img {
+      margin-top: 20px;
+      width: 40%;
+    }
+  }
+  .information {
+    height: 30%;
+    display: flex;
+    .history, .option {
+      border: 2px solid #fff;
+      border-radius: 10px;
+    }
+    .history {
+      width: 70%;
+    }
+    .option {
+      width: 25%;
+    }
+  }
+}
