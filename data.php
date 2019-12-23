@@ -1,12 +1,10 @@
 <?php
-ini_set('display_errors', 1);
-session_start();
-// session_destroy();
 class Gender {
   const MAN = 1;
   const WOMAN = 2;
   const TRANS = 3;
 }
+
 class History {
   public static function set($str) {
     $_SESSION['history'] .= $str.'<br>';
@@ -15,6 +13,7 @@ class History {
     $_SESSION['history'] = '';
   }
 }
+
 abstract class Creature {
   protected $name;
   protected $hp;
@@ -43,11 +42,12 @@ abstract class Creature {
  public function attack($targetObj) {
    if (!mt_rand(0, 9)) {
      $this->attack *= 1.5;
-     $this->attack = (int)$this->attack;
    }
    $targetObj->setHp($targetObj->getHp() - $this->attack);
+   // History::set()
  }
 }
+
 class Human extends Creature {
   protected $gender;
   public function __construct($name, $hp, $attack, $gender) {
@@ -73,6 +73,7 @@ class Human extends Creature {
     }
   }
 }
+
 class Monster extends Creature {
   protected $img;
 
@@ -89,6 +90,7 @@ class Monster extends Creature {
     History::set('Auch!!');
   }
 }
+
 class MagicMonster extends Monster {
   protected $magicAttack;
 
@@ -110,7 +112,8 @@ class MagicMonster extends Monster {
   }
 }
 
-$human = new Human('Junya', 1000, mt_rand(60, 100), Gender::MAN);
+$human = new Human('Junya', 1000, mt_rand(100, 500), Gender::MAN);
+
 $monsters = [];
 $monsters[] = new Monster('Monster1', 500, mt_rand(50, 100), 'img/monster01.png');
 $monsters[] = new MagicMonster('Monster2', 200, mt_rand(30, 80), 'img/monster02.png', mt_rand(100, 160));
@@ -134,72 +137,3 @@ function init() {
   createMonster();
   createHuman();
 }
-function gameover() {
-  $_SESSION = [];
-}
-
-if (!empty($_POST)) {
-  $startFlg = !empty($_POST['start']) ? true : false;
-  $attackFlg = !empty($_POST['attack']) ? true : false;
-  $escapeFlg = !empty($_POST['escape']) ? true : false;
-
-  if ($startFlg) {
-    init();
-  } else {
-    if ($attackFlg) {
-      $_SESSION['human']->attack($_SESSION['monster']);
-      $_SESSION['monster']->shout();
-      $_SESSION['monster']->attack($_SESSION['human']);
-      $_SESSION['human']->shout();
-
-      if ($_SESSION['human']->getHp() <= 0) {
-        gameover();
-      } else {
-        if ($_SESSION['monster']->getHp() <= 0) {
-          createMonster();
-        }
-      }
-    } elseif ($escapeFlg) {
-      createMonster();
-    }
-  }
-  $_POST = [];
-}
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Dragon Quest</title>
-  <link rel="stylesheet" href="style.min.css">
-</head>
-<body>
-<div class="container">
-  <h1>Dragon Quest</h1>
-  <?php if (empty($_SESSION)) : ?>
-    <form method="post" class='start-form'>
-      <input type="submit" name="start" value="Game start">
-    </form>
-  <?php else : ?>
-    <div class="monster">
-      <img src="<?= $_SESSION['monster']->getImg() ?>">
-      <p>HP: <?= $_SESSION['monster']->getHp() ?></p>
-    </div>
-    <div class="information">
-      <div class="history">
-        <p>HP: <?= $_SESSION['human']->getHp() ?></p>
-        <p class='hidden'><?= $_SESSION['history'] ?></p>
-      </div>
-      <div class="option">
-        <form class="battle-form" method="post">
-          <ul>
-            <li><input type='submit' name="attack" value='Attack'></li>
-            <li><input type='submit' name="escape" value='Escape'></li>
-          </ul>
-        </form>
-      </div>
-    </div>
-  <?php endif ?>
-</div>
-</body>
-</html>
